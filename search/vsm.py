@@ -63,7 +63,8 @@ def search(query, inverted_index, document_vectors, document_norms, preprocess, 
     final_results = []
 
     for doc_id, dot_product in scores.items():
-        doc_score = dot_product / (document_norms[doc_id] * query_norm)
+        denom = document_norms[doc_id] * query_norm
+        doc_score = (dot_product / denom) if denom > 0 else 0.0
         final_results.append((doc_id, doc_score))
 
     final_results.sort(key=lambda x: (-x[1], x[0]))
