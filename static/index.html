@@ -1,11 +1,55 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clothing Search</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clothing Search Engine</title>
+  <link rel="stylesheet" href="/static/style.css">
 </head>
-<body>
-    Test (Empty)
+<body data-page="search">
+  <header class="header">
+    <h1>Clothing Search Engine</h1>
+    <nav>
+      <a href="/documents" class="nav-link">Documents</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="mode-container">
+      <div class="mode-toggle-group" role="group" aria-label="Search Mode">
+        <button type="button" class="mode-btn active" data-mode="free">Free Text</button>
+        <button type="button" class="mode-btn" data-mode="phrase">Phrase</button>
+        <button type="button" class="mode-btn" data-mode="proximity">Proximity</button>
+      </div>
+    </div>
+
+    <form id="search-form" class="search-form" autocomplete="off">
+      <input
+        type="text"
+        id="query-input"
+        class="query-input"
+        placeholder="Search clothing..."
+        required
+      >
+      <input
+        type="number"
+        id="k-input"
+        class="k-input hidden"
+        placeholder="k (e.g. 5)"
+        min="1"
+      >
+      <button type="submit" id="search-btn" class="search-btn">Search</button>
+    </form>
+
+    <div id="alert-box" class="alert-box" role="alert"></div>
+
+    <section id="results-container">
+      <div id="search-stats" class="search-stats hidden" aria-live="polite"></div>
+      <div id="results-list" class="card-list"></div>
+      <div id="empty-state" class="empty-state hidden">No matching documents found.</div>
+    </section>
+  </main>
+
+  <script src="/static/app.js" defer></script>
 </body>
 </html>

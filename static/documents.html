@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clothing Search Engine - Documents</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body data-page="documents">
+  <header class="header">
+    <h1>Indexed Documents</h1>
+    <nav>
+      <a href="/" class="nav-link">Back to Search</a>
+    </nav>
+  </header>
+
+  <main>
+    <div id="docs-summary" class="results-header">Loading indexed corpus...</div>
+    <section id="documents-container">
+      <div id="documents-list" class="card-list"></div>
+      <div id="docs-error" class="alert-box hidden" role="alert"></div>
+    </section>
+  </main>
+
+  <script src="/static/app.js" defer></script>
+</body>
+</html>
