@@ -8,7 +8,7 @@ uv run uvicorn app:app --reload
 ```
 
 ### corpus:
-imported using `search/loader.py`. 
+imported from `search/loader.py`. 
 there are 100 documents in the corpus, each with fields: DOCID, CATEGORY, TITLE & TEXT.
 
 `document_blocks` are made using regex, and its constituent fields are also search using regex.
@@ -17,7 +17,7 @@ each field from the corpus is stored as a key, value pair in a document object, 
 
 
 ### preprocessing:
-imported using `search/preprocess.py`.
+imported from `search/preprocess.py`.
 preprocess of any text input does the following in order:
 -> lowercases the `text`
 -> removes any punctuation and extra white space, leaves alphanumerics and underscore
@@ -26,3 +26,32 @@ preprocess of any text input does the following in order:
 -> stems the `filtered_tokens` (`PorterStemmer` from `nltk.stem`)
 
 after this, return the `stemmed_tokens`.
+
+
+### make inverted index:
+imported from `search/inverted_index.py`
+take in the corpus dictionary, which includes tokens now from preprocessing.
+for each document in the corpus:
+-> find the term frequencies (eg. [('men', 2),('tshirt', 3) , ...])
+-> for each term in term_freqs:
+->-> increment df, and add to `postings` list with `(doc_id, freq)`
+
+this gives us the inverted index, where we have: `term -> df -> postings`
+
+
+### vector space model:
+imported from `search/vsm.py`:
+(before we go for search, make document vectors and their norm values)
+take input of query at endpoint `/search?query=` (can also add k as parameter for top k values)
+
+preprocess query to tokens, and make the `query_vector` and `query_norm`
+for each `term` in query_vector:
+-> for eahc `doc_id` where these terms are (from inverted index)
+->-> multiply the `doc_weight` and `query_weight` from the two vectors and store it in scores by `doc_id` as key (this is the dot product)
+
+for final result for each doc, (normalization), divide the dot products by their `document_norms` and `query_norm`
+append this final result to 2d array `final_results`, in the format `(doc_id, doc_score)`
+
+sort this by decreasing `doc_score`, break ties by increasing `doc_id`
+
+return top `k` results (default k = 10)
