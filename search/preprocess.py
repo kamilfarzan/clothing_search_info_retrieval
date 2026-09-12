@@ -6,8 +6,10 @@ import nltk
 nltk.download('punkt_tab')
 nltk.download('stopwords')
 
-def preprocess(text: str) -> list:
+def preprocess(text: str | list) -> list:
     # lowercase, remove punctuation, tokenize, stemming, stopword policy
+    if isinstance(text, list):
+        text = " ".join(text)
 
     # lowercase
     text = text.lower()

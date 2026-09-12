@@ -1,7 +1,7 @@
 import re
 from pathlib import Path
 
-def load_corpus(path) -> list[dict[str, str]]:
+def load_corpus(path) -> list[dict[str, str | list[str]]]:
     corpus_text = Path(path).read_text(encoding="utf-8")
     docs = []
     fields = {
