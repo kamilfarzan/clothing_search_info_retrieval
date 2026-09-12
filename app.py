@@ -4,7 +4,7 @@ from search.loader import load_corpus
 from search.preprocess import preprocess
 from search.inverted_index import make_inverted_index
 from search.vsm import build_document_vectors, search
-from search.positional_index import make_positional_index, phrase_search
+from search.positional_index import make_positional_index, phrase_search, proximity_search
 
 
 corpus = load_corpus("data/corpus_100.txt")
@@ -31,3 +31,7 @@ def run_search(query: str, k: int = 10):
 @app.get("/phrase")
 def phrase(query: str):
     return phrase_search(query, positional_index, preprocess)
+
+@app.get("/proximity")
+def proximity(term1: str, term2: str, k: int):
+    return proximity_search(term1, term2, k, positional_index, preprocess)

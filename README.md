@@ -66,11 +66,20 @@ this positions list is simply made from `enumerate(tokens, start=1)`, which give
 (limitations: we are performing this positional indexing on tokens, not the original text, so if someone searches `cotton WITHIN/1 shirt`, even if there are 3 stopwords between `cotton` and `shirt`, they are ignored and we still give true. this is assumed from the following line in Assignment: `Store positions after the same tokenization/normalization/stemming pipeline used in Part A`)
 
 
-# positional phrase search:
+### positional phrase search:
 imported from `search/positional_index.py`
-takes in the `positional_index` and `query` at endpoint `/phrase?query=`
+takes in the `query` and `positional_index`, is at endpoint `/phrase?query=`
 only for match two words in consecutive order.
 from `positional_index`, make a lookup dictionary for a term where `{doc_id: positions}` for each doc_id with that term
 for the two words, get the lookup dictionaries, and start search in the `common_docs`
 
 -> using a two-pointer approach, if term1 is exactly one position before term2, return the positions, else return `(-1, -1)`
+
+
+### proximity term search:
+imported from `search/positional_index.py`
+takes in two terms, `term1` and `term2`, one WITHIN parameter `k`, `positional_index` is at endpoint `/proximity?term1=<ABC>&term2=<XYZ>&k=10`
+match the two words within some distance between them, and they should be in order t1, t2.
+use the same concept of positional phrase search, using two pointers, but this time use `if 0 < difference <= within_k` as the satisfying criteria, where `difference = positions_2[j] - positions_1[i]`.
+
+-> using a two-pointer approach, if term1 is less than or equal to `k` word distance before term2, return the positions, else return `(-1, -1)`

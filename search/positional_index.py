@@ -27,6 +27,10 @@ def make_positional_index(corpus: list[dict[str, str | list[str]]]): #-> dict[st
     # eg. {"cotton": {"df": 42, "postings": [("D001", 3, [1,2,3]), ("D004", 5, [5,6,8,11,21]), ...]}}
     return positional_index
 
+#### ----
+#### PHRASE SEARCH
+#### ----
+
 def lookup_positions(postings): # converting tuple to dict for quick lookup
     # eg. {"D001": [1,2,3], "D004": [5,6,8,11,21], ...}
     return {
@@ -54,13 +58,13 @@ def phrase_search(query, positional_index, preprocess):
     if len(terms) != 2:
         raise ValueError("Use only two terms.")
 
-    t1, t2 = terms
+    term1, term2 = terms
 
-    if t1 not in positional_index or t2 not in positional_index:
+    if term1 not in positional_index or term2 not in positional_index:
         return []
 
-    positions_1 = lookup_positions(positional_index[t1]["postings"])
-    positions_2 = lookup_positions(positional_index[t2]["postings"])
+    positions_1 = lookup_positions(positional_index[term1]["postings"])
+    positions_2 = lookup_positions(positional_index[term2]["postings"])
 
     common_docs = set(positions_1.keys()) & set(positions_2.keys())
 
@@ -72,7 +76,55 @@ def phrase_search(query, positional_index, preprocess):
         if (match_1, match_2) != (-1, -1):
             results.append({
                 "doc_id": document, 
-                "positions": {t1: match_1, t2: match_2}
+                "positions": {term1: match_1, term2: match_2}
             })
 
+    return results
+
+#### ----
+#### PROXIMITY SEARCH
+#### ----
+
+def positions_within(positions_1, positions_2, within_k):
+    i = j = 0
+
+    while i < len(positions_1) and j < len(positions_2):
+        difference = positions_2[j] - positions_1[i]
+
+        if 0 < difference <= within_k:
+            return (positions_1[i], positions_2[j])
+
+        elif difference <= 0:
+            j+=1
+        else:
+            i += 1
+
+    return (-1, -1)
+
+def proximity_search(term1, term2, within_k, positional_index, preprocess):
+    term1 = preprocess(term1)[0]
+    term2 = preprocess(term2)[0]
+
+    if term1 not in positional_index or term2 not in positional_index:
+        return []
+
+    positions_1 = lookup_positions(positional_index[term1]["postings"])
+    positions_2 = lookup_positions(positional_index[term2]["postings"])
+
+    print(positions_1)
+    print(positions_2)
+
+    common_docs = set(positions_1.keys()) & set(positions_2.keys())
+
+
+    results = []
+
+    for document in sorted(common_docs):
+        match_1, match_2 = positions_within(positions_1[document], positions_2[document], within_k)
+        if (match_1, match_2) != (-1, -1):
+            results.append({
+                "doc_id": document, 
+                "positions": {term1: match_1, term2: match_2}
+            })
+    
     return results
