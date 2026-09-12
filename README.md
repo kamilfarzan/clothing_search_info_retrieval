@@ -53,6 +53,9 @@ for final result for each doc, (normalization), divide the dot products by their
 append this final result to 2d array `final_results`, in the format `(doc_id, doc_score)`
 
 sort this by decreasing `doc_score`, break ties by increasing `doc_id`
+there is also an edge case here.
+if a query term appears in all documents (df = N = 100), then log10(100/100) = log10(1) = 0,
+so query_vector has zero weights, causing query_norm = 0.0  
 
 return top `k` results (default k = 10)
 
