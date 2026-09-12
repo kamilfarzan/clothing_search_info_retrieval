@@ -64,3 +64,13 @@ we have an extra entry in postings, so it looks like: `doc_id, tf, [...positions
 this positions list is simply made from `enumerate(tokens, start=1)`, which gives us position for each token
 
 (limitations: we are performing this positional indexing on tokens, not the original text, so if someone searches `cotton WITHIN/1 shirt`, even if there are 3 stopwords between `cotton` and `shirt`, they are ignored and we still give true. this is assumed from the following line in Assignment: `Store positions after the same tokenization/normalization/stemming pipeline used in Part A`)
+
+
+# positional phrase search:
+imported from `search/positional_index.py`
+takes in the `positional_index` and `query` at endpoint `/phrase?query=`
+only for match two words in consecutive order.
+from `positional_index`, make a lookup dictionary for a term where `{doc_id: positions}` for each doc_id with that term
+for the two words, get the lookup dictionaries, and start search in the `common_docs`
+
+-> using a two-pointer approach, if term1 is exactly one position before term2, return the positions, else return `(-1, -1)`
