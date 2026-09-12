@@ -55,3 +55,12 @@ append this final result to 2d array `final_results`, in the format `(doc_id, do
 sort this by decreasing `doc_score`, break ties by increasing `doc_id`
 
 return top `k` results (default k = 10)
+
+
+### positional index:
+imported from `search/positional_index.py`
+similar to inverted index, we took corpus dictionary and output: `term -> df -> postings` but this time:
+we have an extra entry in postings, so it looks like: `doc_id, tf, [...positions]`
+this positions list is simply made from `enumerate(tokens, start=1)`, which gives us position for each token
+
+(limitations: we are performing this positional indexing on tokens, not the original text, so if someone searches `cotton WITHIN/1 shirt`, even if there are 3 stopwords between `cotton` and `shirt`, they are ignored and we still give true. this is assumed from the following line in Assignment: `Store positions after the same tokenization/normalization/stemming pipeline used in Part A`)
